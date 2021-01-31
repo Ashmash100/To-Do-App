@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root"> </div>
+    <script type="text/babel">
+     
+    
+
+
+   let Form = ({SetInputText,Todo,SetTodo,InputText}) => {
+
+       let textHandler = (e) => {
+        SetInputText(e.target.value)
+        
+       }
+
+       let buttonHandler = (e) => {
+         e.preventDefault();
+         SetTodo([...Todo,{
+             text: InputText,
+             completed: false,
+             id: Math.random()*1000
+         }] )
+         SetInputText('')
+
+       }
+
+       
+       return(
+           <form className='form-inline '>
+           <form className='form-group mx-auto mb-3'>
+            <input type="text" id='mainInput' value={InputText} onChange={textHandler} className='form-control ' autoComplete='off' />
+           <button onClick={buttonHandler} className='btn btn-primary ml-3 '>ADD</button>
+           
+           </form>
+           
+           </form>
+       )
+   }
+
+
+   let FormList = ({Todo,SetTodo}) => {
+    
+      
+       return(
+           <div>
+            <ul className='list-group list-group-flush' >
+            {Todo.map(todo => (
+                <Todoitem 
+                key={todo.id} 
+                text={todo.text}
+                Todo={Todo}
+                SetTodo={SetTodo}
+                todo={todo} 
+                
+                />
+            ))}
+                
+            
+            </ul>
+           </div>
+       )
+   }
+
+   let Todoitem = ({text,todo,Todo,SetTodo}) => {
+
+       let deleteHandler = () => {
+           SetTodo(Todo.filter( element => element.id != todo.id))
+       }
+
+       
+
+       let completeHandler = () => {
+           SetTodo(Todo.map(item => {
+               if(item.id === todo.id) {
+                   return {
+                       ...item, completed: !item.completed
+                   } 
+               } else {
+                   return item
+               }
+           }))
+       }
+
+       return(
+           <div className='ul-item'>
+            <li > <input className={`${todo.completed ? 'completed' : 'not-completed'}`} id='listitems' type="text" value={text} /> </li>
+            <button className='btn btn-outline-success ' onClick={completeHandler}><i className="fas fa-check"></i></button>
+            <button className='btn btn-outline-danger ml-2 ' onClick={deleteHandler}><i className="fas fa-trash"></i></button>
+            
+           </div>
+          
+       
+        
+       )
+   }
+
+
+   
+
+
+   let App = () => {
+       let [InputText,SetInputText] = React.useState("");
+       let [Todo,SetTodo] = React.useState([])
+       
+
+       return (
+           <div>
+            <h2>To-do List </h2>
+            <Form SetInputText={SetInputText} Todo={Todo} SetTodo={SetTodo} InputText={InputText} />
+            <FormList Todo={Todo} SetTodo={SetTodo}   />
+           </div>
+       )
+   }
+
+    ReactDOM.render( <App />, document.getElementById('root') )
+    </script>
+</body>
+</html>
